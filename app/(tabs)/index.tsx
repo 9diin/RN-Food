@@ -1,9 +1,12 @@
 import { FoodListCard, TrendCard } from "@/src/components/card";
+import { useRouter } from "expo-router";
 import { BellRing, ChevronRight, Map, MapPin, Search } from "lucide-react-native";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function GourmetDetailScreen() {
+    const router = useRouter();
+
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white">
             {/* Header: 정밀한 여백 조절 */}
@@ -45,7 +48,7 @@ export default function GourmetDetailScreen() {
                             contentContainerStyle={{ paddingHorizontal: 20 }}
                         >
                             <View className="flex-row items-center gap-x-2">
-                                {["전체", "🍣 일식", "🍝 양식", "🥩 고기", "☕️ 카페", "🍺 술집"].map((item, index) => (
+                                {["🍽️ 전체", "🍣 일식", "🍝 양식", "🥩 고기", "☕️ 카페", "🍺 술집"].map((item, index) => (
                                     <Pressable key={index} className={`px-4 py-2.5 rounded-full border ${index === 0 ? "bg-neutral-900 border-neutral-900" : "bg-white border-neutral-200"}`}>
                                         <Text className={`font-semibold text-[13px] ${index === 0 ? "text-white" : "text-neutral-600"}`}>{item}</Text>
                                     </Pressable>
