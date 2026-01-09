@@ -28,8 +28,8 @@ export default function RestaurantDetailScreen() {
                 {/* 섹션 1: 타이틀 정보 */}
                 <View className="px-5 pt-8 pb-7 border-b-[8px] border-neutral-50">
                     <View className="flex-row items-center mb-3">
-                        {/* 배지 패딩 통일: px-2.5 py-1 */}
-                        <View className="bg-red-50 px-2.5 py-1 rounded">
+                        {/* 배지 패딩 통일: px-2.5 py-1.5 */}
+                        <View className="bg-red-50 px-2.5 py-1.5 rounded">
                             <Text className="text-red-500 text-[11px] font-bold">미쉐린 가이드 2024</Text>
                         </View>
                         <View className="flex-row items-center ml-3">
@@ -70,7 +70,7 @@ export default function RestaurantDetailScreen() {
                             <View className="ml-3 flex-1">
                                 <View className="flex-row items-center">
                                     <Text className="text-neutral-900 font-bold text-[15px]">오늘 12:00 - 22:00</Text>
-                                    <View className="ml-2 bg-green-50 px-2.5 py-1 rounded">
+                                    <View className="ml-2 bg-green-50 px-2.5 py-1.5 rounded">
                                         <Text className="text-green-600 text-[10px] font-bold">영업중</Text>
                                     </View>
                                 </View>
