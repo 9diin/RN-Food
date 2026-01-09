@@ -1,10 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-export default function ExploreScreen() {
+export default function WishListScreen() {
     return (
         <View>
-            <Text>ExploreScreen</Text>
+            <Text>WishListScreen</Text>
         </View>
     );
 }
