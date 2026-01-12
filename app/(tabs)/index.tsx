@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const NAVER_CLIENT_ID = "TXApLT0NR_FnMQCM4WNv";
 const NAVER_CLIENT_SECRET = "cFv6X1d6T2";
 
+// HTML 특수기호 및 태그 제거 함수
 const decodeHTML = (text: string) => {
     if (!text) return "";
     return text
@@ -62,6 +63,7 @@ export default function GourmetMainScreen() {
                         reviewCount: 100 + index * 54,
                         isOpen: index % 5 !== 0,
                         img: image || `https://picsum.photos/seed/${name}/400/400`,
+                        telephone: item.telephone,
                     };
                 })
             );

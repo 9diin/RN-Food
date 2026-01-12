@@ -10,14 +10,10 @@ export const TrendCard = ({ data }: { data: any }) => {
     return (
         <Pressable
             className="mr-4 w-[260px] rounded-3xl overflow-hidden bg-white shadow-sm border border-neutral-100"
-            // AS-IS (에러 발생 가능)
             onPress={() =>
                 router.push({
                     pathname: "/restaurant/[id]",
-                    params: {
-                        id: data.id,
-                        item: JSON.stringify(data), // 전체 데이터를 문자열로 변환
-                    },
+                    params: { id: id, item: JSON.stringify(data) },
                 })
             }
         >
