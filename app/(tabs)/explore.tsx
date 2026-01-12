@@ -317,7 +317,7 @@ export default function ExploreScreen() {
     const [selectedPlace, setSelectedPlace] = useState<any>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const ncpKeyId = process.env.EXPO_PUBLIC_NCP_KEY_ID || "hraspfiyi8";
+    const ncpKeyId = process.env.EXPO_PUBLIC_NCP_KEY_ID || "본인의 키를 입력하세요.";
     const center = { lat: 37.5665, lng: 126.978 };
 
     const onMessage = (event: any) => {
