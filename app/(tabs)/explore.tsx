@@ -336,62 +336,62 @@ export default function ExploreScreen() {
 
     const mapHtml = useMemo(
         () => `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-            <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${ncpKeyId}"></script>
-            <style>
-                body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
-                #map { width: 100%; height: 100vh; }
-                .marker-pin {
-                    width: 38px; height: 38px;
-                    background: white;
-                    border: 0.5px solid #f4f4f5;
-                    border-radius: 50% 50% 50% 0;
-                    transform: rotate(-45deg);
-                    display: flex; justify-content: center; align-items: center;
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-                }
-                .marker-icon { transform: rotate(45deg); font-size: 16px; }
-            </style>
-        </head>
-        <body>
-            <div id="map"></div>
-            <script>
-                var map;
-                var markerObjects = [];
-                window.onload = function() {
-                    map = new naver.maps.Map('map', {
-                        center: new naver.maps.LatLng(${center.lat}, ${center.lng}),
-                        zoom: 16, logoControl: false, zoomControl: false, mapDataControl: false
-                    });
-                    var data = ${JSON.stringify(MOCK_DATA)};
-                    data.forEach(function(item) {
-                        var content = '<div class="marker-pin"><div class="marker-icon">' + item.icon + '</div></div>';
-                        var marker = new naver.maps.Marker({
-                            position: new naver.maps.LatLng(item.lat, item.lng),
-                            map: map,
-                            icon: { content: content, anchor: new naver.maps.Point(19, 38) }
-                        });
-                        naver.maps.Event.addListener(marker, 'click', function() {
-                            window.ReactNativeWebView.postMessage(JSON.stringify(item.id));
-                        });
-                        marker.category = item.type;
-                        markerObjects.push(marker);
-                    });
-                }
-                window.filterMarkers = function(type) {
-                    markerObjects.forEach(function(marker) {
-                        if (type === "ALL" || marker.category === type) marker.setMap(map);
-                        else marker.setMap(null);
-                    });
-                }
-            </script>
-        </body>
-        </html>
-    `,
+            <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                        <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${ncpKeyId}"></script>
+                        <style>
+                            body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+                            #map { width: 100%; height: 100vh; }
+                            .marker-pin {
+                                width: 38px; height: 38px;
+                                background: white;
+                                border: 0.5px solid #f4f4f5;
+                                border-radius: 50% 50% 50% 0;
+                                transform: rotate(-45deg);
+                                display: flex; justify-content: center; align-items: center;
+                                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                            }
+                            .marker-icon { transform: rotate(45deg); font-size: 16px; }
+                        </style>
+                    </head>
+                    <body>
+                        <div id="map"></div>
+                        <script>
+                            var map;
+                            var markerObjects = [];
+                            window.onload = function() {
+                                map = new naver.maps.Map('map', {
+                                    center: new naver.maps.LatLng(${center.lat}, ${center.lng}),
+                                    zoom: 16, logoControl: false, zoomControl: false, mapDataControl: false
+                                });
+                                var data = ${JSON.stringify(MOCK_DATA)};
+                                data.forEach(function(item) {
+                                    var content = '<div class="marker-pin"><div class="marker-icon">' + item.icon + '</div></div>';
+                                    var marker = new naver.maps.Marker({
+                                        position: new naver.maps.LatLng(item.lat, item.lng),
+                                        map: map,
+                                        icon: { content: content, anchor: new naver.maps.Point(19, 38) }
+                                    });
+                                    naver.maps.Event.addListener(marker, 'click', function() {
+                                        window.ReactNativeWebView.postMessage(JSON.stringify(item.id));
+                                    });
+                                    marker.category = item.type;
+                                    markerObjects.push(marker);
+                                });
+                            }
+                            window.filterMarkers = function(type) {
+                                markerObjects.forEach(function(marker) {
+                                    if (type === "ALL" || marker.category === type) marker.setMap(map);
+                                    else marker.setMap(null);
+                                });
+                            }
+                        </script>
+                    </body>
+                </html>
+            `,
         [ncpKeyId]
     );
 
@@ -413,7 +413,7 @@ export default function ExploreScreen() {
                                 setCategory(item.id);
                                 webViewRef.current?.injectJavaScript(`window.filterMarkers("${item.id}")`);
                             }}
-                            className={`flex-row items-center px-5 py-2 rounded-full mx-0.5 ${category === item.id ? "bg-neutral-900" : "bg-transparent"}`}
+                            className={`flex-row items-center px-5 py-3 rounded-full mx-0.5 ${category === item.id ? "bg-neutral-900" : "bg-transparent"}`}
                         >
                             <item.icon size={14} color={category === item.id ? "white" : "#737373"} strokeWidth={2.5} />
                             <Text className={`ml-1.5 text-[13px] font-bold ${category === item.id ? "text-white" : "text-neutral-500"}`}>{item.label}</Text>

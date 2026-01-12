@@ -1,113 +1,129 @@
-import { Bell, ChevronRight, CreditCard, Heart, Info, LogOut, MessageSquare, Settings, ShieldCheck, ShoppingBag, Ticket } from "lucide-react-native";
+import { useRouter } from "expo-router";
+import { Bell, ChevronRight, CreditCard, Heart, Info, LogOut, MessageSquare, Settings, ShieldCheck, ShoppingBag, Star, Ticket } from "lucide-react-native";
 import React from "react";
-import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
+    const router = useRouter();
+
+    const handleLogout = () => {
+        Alert.alert("로그아웃", "정말 로그아웃 하시겠습니까?", [
+            { text: "취소", style: "cancel" },
+            { text: "확인", onPress: () => console.log("Logout") },
+        ]);
+    };
+
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white">
-            {/* Header */}
-            <View className="px-5 py-4 flex-row justify-between items-center">
-                <Text className="text-[24px] font-black text-neutral-900">내 정보</Text>
-                <Pressable className="w-10 h-10 items-center justify-center bg-neutral-50 rounded-full">
-                    <Settings size={20} color="#1e293b" />
-                </Pressable>
+            {/* Header: 경계선 없는 깔끔한 헤더 */}
+            <View className="px-6 py-4 flex-row justify-between items-center">
+                <Text className="text-[22px] font-bold text-neutral-900">내 정보</Text>
+                <TouchableOpacity activeOpacity={0.7}>
+                    <Settings size={22} color="#171717" />
+                </TouchableOpacity>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
-                {/* 섹션 1: 프로필 상단 (라운디드 스퀘어 적용) */}
-                <View className="px-5 py-8 flex-row items-center justify-between">
-                    <View className="flex-row items-center">
-                        <View className="relative">
-                            {/* 카카오톡 스타일 라운디드 스퀘어: rounded-[26px] 정도가 가장 예쁨 */}
-                            <Image source={{ uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200" }} className="w-[72px] h-[72px] rounded-[26px] bg-neutral-100" />
-                            {/* VIP 배지 위치 및 디자인 미세 조정 */}
-                            <View className="absolute -bottom-1 -right-1 bg-neutral-900 px-1.5 py-0.5 rounded-lg border-2 border-white">
-                                <Text className="text-[9px] text-white font-black italic">VIP</Text>
-                            </View>
+                {/* [섹션 1] 프로필: FoodListCard 레이아웃 계승 */}
+                <View className="px-6 py-8 flex-row items-start gap-5">
+                    <View className="relative">
+                        <Image source={{ uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200" }} className="w-24 h-24 rounded-xl bg-neutral-100" />
+                        <View className="absolute -bottom-1 -right-1 bg-neutral-900 px-2 py-0.5 rounded-lg border-2 border-white">
+                            <Text className="text-[9px] text-white font-black italic">VIP</Text>
                         </View>
+                    </View>
 
-                        <View className="ml-5">
+                    <View className="flex-1 h-24 justify-between py-1">
+                        <View>
                             <View className="flex-row items-center">
-                                <Text className="text-[20px] font-black text-neutral-900">미식이형</Text>
-                                {/* 프로 미식가 배지: 더 통통하게(py-1.5) 수정 */}
-                                <View className="ml-2 bg-neutral-100 px-2.5 py-1 rounded-md border border-neutral-200/50 mt-0.5">
-                                    <Text className="text-neutral-500 text-[10px] font-extrabold">프로 미식가</Text>
+                                <Text className="text-neutral-900 text-[22px] font-bold" numberOfLines={1}>
+                                    미식이형
+                                </Text>
+                                <View className="ml-2 bg-neutral-100 px-2 py-0.5 rounded-md">
+                                    <Text className="text-neutral-500 text-[10px] font-bold">프로 미식가</Text>
                                 </View>
                             </View>
-                            <Text className="text-neutral-400 text-[13px] mt-2 font-semibold">gourmet_bro@example.com</Text>
+                            <Text className="text-neutral-400 text-[13px] mt-1 font-medium">gourmet_bro@example.com</Text>
+                        </View>
+
+                        <View className="flex-row items-center justify-between">
+                            <View className="flex-row items-center">
+                                <Star size={14} color="#F97316" fill="#F97316" />
+                                <Text className="ml-1 text-neutral-900 font-bold text-[14px]">4.9</Text>
+                                <View className="mx-2 w-px h-3 bg-neutral-200" />
+                                <Text className="text-neutral-500 text-[12px]">리뷰 124개</Text>
+                            </View>
+                            <TouchableOpacity className="bg-neutral-50 px-3 py-1.5 rounded-xl" onPress={() => router.push("/profile/edit")}>
+                                <Text className="text-neutral-500 text-[11px] font-bold">수정</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-
-                    <Pressable className="w-10 h-10 bg-neutral-50 rounded-full items-center justify-center border border-neutral-100">
-                        <ChevronRight size={20} color="#CBD5E1" strokeWidth={2.5} />
-                    </Pressable>
                 </View>
 
-                {/* 섹션 2: 퀵 메뉴 (카드 배경색 + 아이콘 박스 조화) */}
-                <View className="px-5 mb-8">
-                    <View className="flex-row gap-x-3">
-                        <QuickCard label="즐겨찾기" count="12" icon={<Heart size={18} color="#FF4B4B" fill="#FF4B4B" />} bgColor="bg-red-50/50" />
-                        <QuickCard label="내 리뷰" count="5" icon={<MessageSquare size={18} color="#4B9DFF" fill="#4B9DFF" />} bgColor="bg-blue-50/50" />
-                        <QuickCard label="쿠폰함" count="2" icon={<Ticket size={18} color="#FF9F4B" fill="#FF9F4B" />} bgColor="bg-orange-50/50" />
-                    </View>
+                {/* [섹션 2] 퀵 메뉴: 카드 배경 없이 아이콘 위주로 깔끔하게 */}
+                <View className="px-6 mb-10 flex-row justify-around">
+                    <QuickItem label="즐겨찾기" count="12" icon={<Heart size={20} color="#FF4B4B" fill="#FF4B4B" />} />
+                    <QuickItem label="내 리뷰" count="5" icon={<MessageSquare size={20} color="#3B82F6" fill="#3B82F6" />} />
+                    <QuickItem label="쿠폰함" count="2" icon={<Ticket size={20} color="#F59E0B" fill="#F59E0B" />} />
                 </View>
 
-                <View className="h-[10px] bg-neutral-50 w-full" />
+                {/* 섹션 구분선: 더 얇고 깔끔하게 (bg-neutral-50) */}
+                <View className="h-[8px] bg-neutral-50 w-full" />
 
-                {/* 섹션 3: 나의 활동 */}
-                <View className="px-5 py-8">
-                    <Text className="text-[18px] font-extrabold text-neutral-900 mb-4">나의 활동</Text>
-                    <View className="bg-neutral-50 rounded-[28px] px-2 py-1">
-                        <MenuRow icon={<ShoppingBag size={18} color="#64748B" />} label="예약 및 주문 내역" badge="3" />
-                        <View className="mx-4 h-[1px] bg-white/50" />
-                        <MenuRow icon={<CreditCard size={18} color="#64748B" />} label="결제수단 관리" />
-                        <View className="mx-4 h-[1px] bg-white/50" />
-                        <MenuRow icon={<Bell size={18} color="#64748B" />} label="알림 설정" />
-                    </View>
+                {/* [섹션 3] 나의 활동: 카드 형태 제거, 텍스트와 라인으로만 구성 */}
+                <View className="py-6">
+                    <Text className="px-6 text-[14px] font-bold text-neutral-400 mb-2">나의 활동</Text>
+                    <MenuRow icon={<ShoppingBag size={20} color="#404040" />} label="예약 및 주문 내역" badge="3" />
+                    <MenuRow icon={<CreditCard size={20} color="#404040" />} label="결제수단 관리" />
+                    <MenuRow icon={<Bell size={20} color="#404040" />} label="알림 설정" />
+                </View>
 
-                    <Text className="text-[18px] font-extrabold text-neutral-900 mt-10 mb-4">서비스 정보</Text>
-                    <View className="bg-neutral-50 rounded-[28px] px-2 py-1">
-                        <MenuRow icon={<Info size={18} color="#64748B" />} label="자주 묻는 질문" />
-                        <View className="mx-4 h-[1px] bg-white/50" />
-                        <MenuRow icon={<ShieldCheck size={18} color="#64748B" />} label="약관 및 정책" />
-                    </View>
+                {/* [섹션 4] 서비스 정보 */}
+                <View className="py-6 border-t border-neutral-50">
+                    <Text className="px-6 text-[14px] font-bold text-neutral-400 mb-2">서비스 정보</Text>
+                    <MenuRow icon={<Info size={20} color="#404040" />} label="자주 묻는 질문" />
+                    <MenuRow icon={<ShieldCheck size={20} color="#404040" />} label="약관 및 정책" />
+                </View>
 
-                    {/* 섹션 5: 로그아웃 */}
-                    <View className="mt-12 items-center mb-10">
-                        <Pressable className="flex-row items-center px-6 py-3">
-                            <LogOut size={14} color="#CBD5E1" />
-                            <Text className="ml-2 text-neutral-300 font-bold text-[14px]">로그아웃</Text>
-                        </Pressable>
-                        <Text className="text-neutral-200 text-[11px] mt-1 font-medium">버전 정보 1.2.4 (최신)</Text>
-                    </View>
+                {/* 로그아웃 및 푸터 */}
+                <View className="mt-12 mb-20 items-center">
+                    <TouchableOpacity onPress={handleLogout} className="flex-row items-center py-2 px-4">
+                        <LogOut size={14} color="#D4D4D4" />
+                        <Text className="ml-2 text-neutral-300 font-bold text-[14px]">로그아웃</Text>
+                    </TouchableOpacity>
+                    <Text className="text-neutral-200 text-[11px] mt-1">버전 1.2.4 (최신)</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>
     );
 }
 
-const QuickCard = ({ label, count, icon, bgColor }: any) => (
-    <Pressable className={`flex-1 ${bgColor} border border-neutral-100/50 rounded-[28px] p-5 items-center`}>
-        <View className="bg-white w-10 h-10 rounded-full items-center justify-center mb-3 shadow-sm shadow-neutral-100">{icon}</View>
-        <Text className="text-neutral-900 font-black text-[18px] mb-0.5">{count}</Text>
-        <Text className="text-neutral-400 text-[11px] font-bold">{label}</Text>
-    </Pressable>
-);
+// 퀵 메뉴 컴포넌트 (미니멀 스타일)
+function QuickItem({ label, count, icon }: any) {
+    return (
+        <TouchableOpacity activeOpacity={0.6} className="items-center px-4">
+            <View className="w-12 h-12 bg-neutral-50 rounded-full items-center justify-center mb-2">{icon}</View>
+            <Text className="text-neutral-900 font-bold text-[16px]">{count}</Text>
+            <Text className="text-neutral-400 text-[11px] font-medium mt-1">{label}</Text>
+        </TouchableOpacity>
+    );
+}
 
-const MenuRow = ({ icon, label, badge }: any) => (
-    <Pressable className="flex-row items-center px-4 py-5">
-        {icon && <View className="mr-3.5">{icon}</View>}
-        <Text className="flex-1 text-neutral-800 font-bold text-[15px]">{label}</Text>
-        <View className="flex-row items-center">
-            {badge && (
-                <View className="bg-red-500 w-5 h-5 rounded-full items-center justify-center mr-2 shadow-sm shadow-red-200">
-                    <Text className="text-white text-[10px] font-black">{badge}</Text>
-                </View>
-            )}
-            <View className="mt-[2px]">
-                <ChevronRight size={16} color="#CBD5E1" strokeWidth={2.5} />
+// 메뉴 로우 컴포넌트 (카드 박스 제거 버전)
+function MenuRow({ icon, label, badge }: any) {
+    return (
+        <TouchableOpacity activeOpacity={0.5} className="flex-row items-center px-6 py-4">
+            <View className="mr-4">{icon}</View>
+            <Text className="flex-1 text-neutral-800 font-medium text-[16px]">{label}</Text>
+            <View className="flex-row items-center">
+                {badge && (
+                    <View className="bg-red-500 px-1.5 py-0.5 rounded-full mr-2">
+                        <Text className="text-white text-[10px] font-bold">{badge}</Text>
+                    </View>
+                )}
+                <ChevronRight size={18} color="#E5E5E5" strokeWidth={2} />
             </View>
-        </View>
-    </Pressable>
-);
+        </TouchableOpacity>
+    );
+}
