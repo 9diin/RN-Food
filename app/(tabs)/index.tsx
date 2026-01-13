@@ -1,6 +1,6 @@
 import { FoodListCard, TrendCard } from "@/src/components/card";
 import { useRouter } from "expo-router";
-import { BellRing, ChevronRight, Map, MapPin, Search } from "lucide-react-native";
+import { BellRing, ChevronRight, MapPin, Search, SearchX } from "lucide-react-native"; // SearchX 아이콘 추가
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,7 +8,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const NAVER_CLIENT_ID = "TXApLT0NR_FnMQCM4WNv";
 const NAVER_CLIENT_SECRET = "cFv6X1d6T2";
 
-// HTML 특수기호 및 태그 제거 함수
 const decodeHTML = (text: string) => {
     if (!text) return "";
     return text
@@ -24,6 +23,7 @@ export default function GourmetMainScreen() {
     const router = useRouter();
     const [restaurants, setRestaurants] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchNaverImage = async (query: string) => {
         try {
@@ -37,27 +37,30 @@ export default function GourmetMainScreen() {
         }
     };
 
-    const fetchAllData = async () => {
+    const fetchAllData = async (query: string = "방배동 맛집") => {
         try {
             setIsLoading(true);
-            const res = await fetch(`https://openapi.naver.com/v1/search/local.json?query=${encodeURIComponent("방배동 맛집")}&display=15&sort=comment`, {
+            const res = await fetch(`https://openapi.naver.com/v1/search/local.json?query=${encodeURIComponent(query)}&display=15&sort=comment`, {
                 headers: { "X-Naver-Client-Id": NAVER_CLIENT_ID, "X-Naver-Client-Secret": NAVER_CLIENT_SECRET },
             });
             const localData = await res.json();
+
+            // 검색 결과가 없을 경우 빈 배열로 초기화
+            if (!localData.items || localData.items.length === 0) {
+                setRestaurants([]);
+                return;
+            }
 
             const formatted = await Promise.all(
                 localData.items.map(async (item: any, index: number) => {
                     const name = decodeHTML(item.title);
                     const fullAddr = decodeHTML(item.roadAddress || item.address);
-                    const addrParts = fullAddr.split(" ");
-                    const shortAddr = addrParts.length > 2 ? `${addrParts[2]} ${addrParts[3] || ""}` : fullAddr;
-                    const image = await fetchNaverImage(`${name} ${addrParts[2] || ""}`);
-
+                    const image = await fetchNaverImage(`${name} 방배동`);
                     return {
-                        id: `res-${index}`,
+                        id: `res-${index}-${name}`,
                         name,
                         category: item.category.split(">").pop() || "식당",
-                        location: shortAddr.trim(),
+                        location: fullAddr.split(" ")[2] || "방배동",
                         fullAddress: fullAddr,
                         score: (4.2 + (index % 7) * 0.1).toFixed(1),
                         reviewCount: 100 + index * 54,
@@ -81,6 +84,7 @@ export default function GourmetMainScreen() {
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white">
+            {/* 헤더 영역 */}
             <View className="px-5 py-3 flex-row justify-between items-center border-b border-neutral-50">
                 <View>
                     <Pressable className="flex-row items-center">
@@ -98,34 +102,61 @@ export default function GourmetMainScreen() {
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
+                {/* 검색 바 */}
                 <View className="pt-6 px-5">
                     <View className="h-12 flex-row items-center px-4 bg-neutral-100 rounded-xl">
                         <Search size={18} color="#94A3B8" />
-                        <TextInput placeholder="맛집 검색" className="flex-1 ml-2 font-medium" />
+                        <TextInput placeholder="맛집 검색 (예: 돈까스, 파스타)" className="flex-1 ml-2 font-medium" value={searchQuery} onChangeText={setSearchQuery} onSubmitEditing={() => fetchAllData(`${searchQuery} 방배동`)} />
                     </View>
                 </View>
 
-                <View className="mt-8">
-                    <Text className="px-5 text-[20px] font-bold mb-4">실시간 인기 맛집</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pl-5">
-                        {restaurants.slice(0, 5).map((item) => (
-                            <TrendCard key={item.id} data={item} />
-                        ))}
-                    </ScrollView>
-                </View>
+                {isLoading ? (
+                    <View className="mt-20">
+                        <ActivityIndicator color="#000" />
+                    </View>
+                ) : restaurants.length > 0 ? (
+                    <>
+                        {/* 인기 맛집 섹션 */}
+                        <View className="mt-8">
+                            <Text className="px-5 text-[20px] font-bold mb-4">실시간 인기 맛집</Text>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pl-5">
+                                {restaurants.slice(0, 10).map((item) => (
+                                    <TrendCard key={item.id} data={item} />
+                                ))}
+                            </ScrollView>
+                        </View>
 
-                <View className="px-5 mt-10 mb-28">
-                    <Text className="text-[20px] font-bold text-neutral-900 mb-5">추천 맛집 리스트</Text>
-                    {isLoading ? <ActivityIndicator color="#000" style={{ marginTop: 50 }} /> : restaurants.map((item) => <FoodListCard key={item.id} data={item} />)}
-                </View>
+                        {/* 리스트 섹션 */}
+                        <View className="px-5 mt-10 mb-28">
+                            <Text className="text-[20px] font-bold text-neutral-900 mb-5">추천 맛집 리스트</Text>
+                            {restaurants.map((item) => (
+                                <FoodListCard key={item.id} data={item} />
+                            ))}
+                        </View>
+                    </>
+                ) : (
+                    /* ✨ 수정된 부분: 검색 결과가 없을 때의 UI */
+                    <View className="flex-1 items-center justify-center pt-28 px-10">
+                        <View className="bg-neutral-50 w-20 h-20 rounded-full items-center justify-center mb-6">
+                            <SearchX size={32} color="#D1D5DB" />
+                        </View>
+                        <Text className="text-neutral-900 font-bold text-[18px] mb-2 text-center">찾으시는 맛집이 없나요?</Text>
+                        <Text className="text-neutral-400 text-center text-[14px] leading-6">
+                            입력하신 검색어에 대한 결과가 없습니다.{"\n"}
+                            다른 검색어나 지역명을 입력해보세요!
+                        </Text>
+                        <Pressable
+                            onPress={() => {
+                                setSearchQuery("");
+                                fetchAllData();
+                            }}
+                            className="mt-8 bg-neutral-900 px-6 py-3 rounded-xl"
+                        >
+                            <Text className="text-white font-bold">전체 목록 보기</Text>
+                        </Pressable>
+                    </View>
+                )}
             </ScrollView>
-
-            <View className="absolute bottom-10 w-full items-center">
-                <Pressable onPress={() => router.push("/explore")} className="bg-black flex-row items-center px-6 py-3.5 rounded-full shadow-xl">
-                    <Map size={18} color="white" />
-                    <Text className="text-white font-bold ml-2">지도보기</Text>
-                </Pressable>
-            </View>
         </SafeAreaView>
     );
 }
